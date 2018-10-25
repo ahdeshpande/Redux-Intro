@@ -1,3 +1,7 @@
+function generateId() {
+    return Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36);
+}
+
 function createStore(reducer) {
     let state;
     let listeners = [];
@@ -78,7 +82,7 @@ function todos(state = [], action) {
         case ADD_TODO:
             return state.concat([action.todo]);
         case REMOVE_TODO:
-            return state.filter(item => item !== action.id);
+            return state.filter(item => item.id !== action.id);
         case TOGGLE_TODO:
             return state.map(item => item.id !== action.id ? item :
                 Object.assign({}, item, {complete: !item.complete}));
@@ -93,7 +97,7 @@ function goals(state = [], action) {
         case ADD_GOAL:
             return state.concat([action.goal]);
         case REMOVE_GOAL:
-            return state.filter(item => item !== action.id);
+            return state.filter(item => item.id !== action.id);
         case TOGGLE_GOAL:
             return state.map(item => item.id !== action.id ? item :
                 Object.assign({}, item, {complete: !item.complete}));
@@ -114,39 +118,100 @@ function app(state = {}, action) {
 const store = createStore(app);
 
 store.subscribe(() => {
-    console.log('The new state is: ', store.getState())
+    const {todos, goals} = store.getState();
+
+    document.getElementById('todos').innerHTML = '';
+    document.getElementById('goals').innerHTML = '';
+
+    todos.forEach(addTodoToDOM);
+    goals.forEach(addGoalToDOM);
 });
 
-store.dispatch(addTodoAction({
-    id: 0,
-    name: 'Walk the dog',
-    complete: false,
-}));
+// DOM Code
+function addTodo() {
+    const input = document.getElementById('todo');
+    const todo = input.value;
+    input.value = '';
 
-store.dispatch(addTodoAction({
-    id: 1,
-    name: 'Wash the car',
-    complete: false,
-}));
+    store.dispatch(addTodoAction({
+            id: generateId(),
+            name: todo,
+            complete: false,
+        })
+    );
+}
 
-store.dispatch(addTodoAction({
-    id: 2,
-    name: 'Go to the gym',
-    complete: true,
-}));
+function addGoal() {
+    const input = document.getElementById('goal');
+    const goal = input.value;
+    input.value = '';
 
-store.dispatch(removeTodoAction(1));
+    store.dispatch(addGoalAction({
+            id: generateId(),
+            name: goal,
+            complete: false,
+        })
+    );
+}
 
-store.dispatch(toggleTodoAction(0));
+document.getElementById('todoBtn')
+    .addEventListener('click', addTodo);
 
-store.dispatch(addGoalAction({
-    id: 0,
-    name: 'Learn Redux'
-}));
+document.getElementById('goalBtn')
+    .addEventListener('click', addGoal);
 
-store.dispatch(addGoalAction({
-    id: 1,
-    name: 'Lose 20 pounds'
-}));
+function createRemoveButton(onClick) {
 
-store.dispatch(removeGoalAction(0));
+    const removeBtn = document.createElement('button');
+    removeBtn.innerHTML = 'X';
+    removeBtn.addEventListener('click', onClick);
+    return removeBtn;
+
+}
+
+function addTodoToDOM(todo) {
+
+    const item = document.createElement('li');
+
+    const text = document.createTextNode(todo.name);
+
+    const removeBtn = createRemoveButton(() => {
+        store.dispatch(removeTodoAction(todo.id));
+    });
+
+    item.appendChild(text);
+    item.appendChild(removeBtn);
+
+    item.style.textDecoration = todo.complete ? 'line-through' : 'none';
+    item.addEventListener('click', () => {
+        store.dispatch(toggleTodoAction(todo.id));
+    });
+
+    document.getElementById('todos')
+        .appendChild(item);
+
+}
+
+function addGoalToDOM(goal) {
+
+    const item = document.createElement('li');
+
+    const text = document.createTextNode(goal.name);
+
+    const removeBtn = createRemoveButton(() => {
+        store.dispatch(removeGoalAction(goal.id));
+    });
+
+
+    item.appendChild(text);
+    item.appendChild(removeBtn);
+
+    item.style.textDecoration = goal.complete ? 'line-through' : 'none';
+    item.addEventListener('click', () => {
+        store.dispatch(toggleGoalAction(goal.id));
+    });
+
+    document.getElementById('goals')
+        .appendChild(item);
+
+}
