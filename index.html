@@ -45,21 +45,33 @@
         addItem = (e) => {
             e.preventDefault();
 
-            this.props.store.dispatch(addTodoAction({
-                    id: generateId(),
-                    name: this.input.value,
-                    complete: false,
+            return API.saveTodo(this.input.value)
+                .then(todo => {
+                    this.props.store.dispatch(addTodoAction(todo));
+                    this.input = '';
                 })
-            );
+                .catch(() => {
+                    alert("There was some problem. Try again.")
+                });
 
         };
 
         removeItem = (item) => {
             this.props.store.dispatch(removeTodoAction(item.id));
+            API.deleteTodo(item.id)
+                .catch(() => {
+                    this.props.store.dispatch(addTodoAction(item));
+                    alert("There was some problem. Try again.")
+                });
         };
 
         toggleItem = (item) => {
             this.props.store.dispatch(toggleTodoAction(item.id));
+            API.saveTodoToggle(item.id)
+                .catch(() => {
+                    this.props.store.dispatch(toggleTodoAction(item.id));
+                    alert("There was some problem. Try again.")
+                });
         };
 
         render() {
@@ -87,17 +99,23 @@
         addItem = (e) => {
             e.preventDefault();
 
-            this.props.store.dispatch(addGoalAction({
-                    id: generateId(),
-                    name: this.input.value,
-                    complete: false,
+            return API.saveGoal(this.input.value)
+                .then(goal => {
+                    this.props.store.dispatch(addGoalAction(goal));
+                    this.input = '';
                 })
-            );
-
+                .catch(() => {
+                    alert("There was some problem. Try again.")
+                });
         };
 
         removeItem = (item) => {
             this.props.store.dispatch(removeGoalAction(item.id));
+            API.deleteGoal(item.id)
+                .catch(() => {
+                    this.props.store.dispatch(addGoalAction(item));
+                    alert("There was some problem. Try again.")
+                });
         };
 
         toggleItem = (item) => {
@@ -142,7 +160,7 @@
             const {store} = this.props;
             const {todos, goals, loading} = store.getState();
 
-            if(loading) {
+            if (loading) {
                 return (
                     <h3>Loading . . .</h3>
                 )
