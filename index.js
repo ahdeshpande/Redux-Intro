@@ -5,6 +5,10 @@ function generateId() {
 const ADD_TODO = 'ADD_TODO';
 const REMOVE_TODO = 'REMOVE_TODO';
 const TOGGLE_TODO = 'TOGGLE_TODO';
+const ADD_GOAL = 'ADD_GOAL';
+const REMOVE_GOAL = 'REMOVE_GOAL';
+const TOGGLE_GOAL = 'TOGGLE_GOAL';
+const RECEIVE_DATA = 'RECEIVE_DATA';
 
 function addTodoAction(todo) {
     return {
@@ -27,10 +31,6 @@ function toggleTodoAction(id) {
     }
 }
 
-const ADD_GOAL = 'ADD_GOAL';
-const REMOVE_GOAL = 'REMOVE_GOAL';
-const TOGGLE_GOAL = 'TOGGLE_GOAL';
-
 function addGoalAction(goal) {
     return {
         type: ADD_GOAL,
@@ -52,6 +52,14 @@ function toggleGoalAction(id) {
     }
 }
 
+function receiveDataAction(todos, goals){
+    return {
+        type: RECEIVE_DATA,
+        todos,
+        goals,
+    }
+}
+
 function todos(state = [], action) {
     switch (action.type) {
         case ADD_TODO:
@@ -61,6 +69,8 @@ function todos(state = [], action) {
         case TOGGLE_TODO:
             return state.map(item => item.id !== action.id ? item :
                 Object.assign({}, item, {complete: !item.complete}));
+        case RECEIVE_DATA:
+            return action.todos;
         default:
             return state
     }
@@ -76,6 +86,8 @@ function goals(state = [], action) {
         case TOGGLE_GOAL:
             return state.map(item => item.id !== action.id ? item :
                 Object.assign({}, item, {complete: !item.complete}));
+        case RECEIVE_DATA:
+            return action.goals;
         default:
             return state
     }
