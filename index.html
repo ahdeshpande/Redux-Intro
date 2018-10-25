@@ -41,10 +41,28 @@
 
     class Todos extends React.Component {
 
+        addItem = (e) => {
+          e.preventDefault();
+
+          this.props.store.dispatch(addTodoAction({
+                  id: generateId(),
+                  name: this.input.value,
+                  complete: false,
+              })
+          );
+
+        };
+
         render() {
             return (
                 <div>
-                    TODOS
+                    <h1>Todos</h1>
+                    <input
+                        type="text"
+                        placeholder="Add a todo item"
+                        ref={(input) => {this.input = input}}
+                    />
+                    <button onClick={this.addItem}>Add Todo</button>
                     <List/>
                 </div>
             )
@@ -53,10 +71,28 @@
 
     class Goals extends React.Component {
 
+        addItem = (e) => {
+            e.preventDefault();
+
+            this.props.store.dispatch(addGoalAction({
+                    id: generateId(),
+                    name: this.input.value,
+                    complete: false,
+                })
+            );
+
+        };
+
         render() {
             return (
                 <div>
-                    GOALS
+                    <h1>Goals</h1>
+                    <input
+                        type="text"
+                        placeholder="Add a goal item"
+                        ref={(input) => {this.input = input}}
+                    />
+                    <button onClick={this.addItem}>Add Goal</button>
                     <List/>
                 </div>
             )
@@ -68,15 +104,15 @@
         render() {
             return (
                 <div>
-                    <Todos/>
-                    <Goals/>
+                    <Todos store={this.props.store}/>
+                    <Goals store={this.props.store}/>
                 </div>
             )
         }
     }
 
     ReactDOM.render(
-        <App/>,
+        <App store={store}/>,
         document.getElementById('app')
     )
 
