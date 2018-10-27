@@ -136,6 +136,18 @@ function todos(state = [], action) {
     }
 }
 
+function handleInitialData() {
+    return (dispatch) => {
+        Promise.all([
+            API.fetchTodos(),
+            API.fetchGoals()
+        ])
+            .then(([todos, goals]) => {
+                    dispatch(receiveDataAction(todos, goals));
+                }
+            );
+    }
+}
 
 function goals(state = [], action) {
     switch (action.type) {
