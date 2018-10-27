@@ -46,28 +46,16 @@
         addItem = (e) => {
             e.preventDefault();
 
-            return API.saveTodo(this.input.value)
-                .then(todo => {
-                    this.props.store.dispatch(addTodoAction(todo));
-                    this.input = '';
-                })
-                .catch(() => {
-                    alert("There was some problem. Try again.")
-                });
-
+            this.props.store.dispatch(handleAddTodo(this.input.value,
+                () => this.input.value = ''));
         };
 
         removeItem = (item) => {
-            this.props.store.dispatch(handleDeleteTodo(item))
+            this.props.store.dispatch(handleDeleteTodo(item));
         };
 
         toggleItem = (item) => {
-            this.props.store.dispatch(toggleTodoAction(item.id));
-            API.saveTodoToggle(item.id)
-                .catch(() => {
-                    this.props.store.dispatch(toggleTodoAction(item.id));
-                    alert("There was some problem. Try again.")
-                });
+            this.props.store.dispatch(handleToggleTodo(item));
         };
 
         render() {
@@ -96,7 +84,7 @@
             e.preventDefault();
 
             this.props.store.dispatch(handleAddGoal(this.input.value,
-                () => this.input.value = ''))
+                () => this.input.value = ''));
         };
 
         removeItem = (item) => {

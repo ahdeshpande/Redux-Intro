@@ -60,12 +60,37 @@ function receiveDataAction(todos, goals) {
     }
 }
 
+function handleAddTodo(name, cb) {
+    return (dispatch) => {
+        return API.saveTodo(name)
+            .then(todo => {
+                dispatch(addTodoAction(todo));
+                cb();
+            })
+            .catch(() => {
+                alert("There was some problem. Try again.")
+            });
+
+    }
+}
+
 function handleDeleteTodo(item) {
     return (dispatch) => {
         dispatch(removeTodoAction(item.id));
         API.deleteTodo(item.id)
             .catch(() => {
                 dispatch(addTodoAction(item));
+                alert("There was some problem. Try again.")
+            });
+    }
+}
+
+function handleToggleTodo(item) {
+    return (dispatch) => {
+        dispatch(toggleTodoAction(item.id));
+        API.saveTodoToggle(item.id)
+            .catch(() => {
+                dispatch(toggleTodoAction(item.id));
                 alert("There was some problem. Try again.")
             });
     }
