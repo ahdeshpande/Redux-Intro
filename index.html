@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/react-dom@16.3.0-alpha.1/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <script src="https://tylermcginnis.com/goals-todos-api/index.js"></script>
+    <script src="https://unpkg.com/redux-thunk@2.2.0/dist/redux-thunk.min.js"></script>
 </head>
 <body>
 
@@ -57,12 +58,7 @@
         };
 
         removeItem = (item) => {
-            this.props.store.dispatch(removeTodoAction(item.id));
-            API.deleteTodo(item.id)
-                .catch(() => {
-                    this.props.store.dispatch(addTodoAction(item));
-                    alert("There was some problem. Try again.")
-                });
+            this.props.store.dispatch(handleDeleteTodo(item))
         };
 
         toggleItem = (item) => {
