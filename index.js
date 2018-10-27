@@ -71,6 +71,30 @@ function handleDeleteTodo(item) {
     }
 }
 
+function handleAddGoal(name, cb) {
+    return (dispatch) => {
+        return API.saveGoal(name)
+            .then(goal => {
+                dispatch(addGoalAction(goal));
+                cb();
+            })
+            .catch(() => {
+                alert("There was some problem. Try again.")
+            });
+    }
+}
+
+function handleDeleteGoal(item) {
+    return (dispatch) => {
+        dispatch(removeGoalAction(item.id));
+        API.deleteGoal(item.id)
+            .catch(() => {
+                dispatch(addGoalAction(item));
+                alert("There was some problem. Try again.")
+            });
+    }
+}
+
 function todos(state = [], action) {
     switch (action.type) {
         case ADD_TODO:

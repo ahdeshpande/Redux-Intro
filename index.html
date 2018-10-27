@@ -95,23 +95,12 @@
         addItem = (e) => {
             e.preventDefault();
 
-            return API.saveGoal(this.input.value)
-                .then(goal => {
-                    this.props.store.dispatch(addGoalAction(goal));
-                    this.input = '';
-                })
-                .catch(() => {
-                    alert("There was some problem. Try again.")
-                });
+            this.props.store.dispatch(handleAddGoal(this.input.value,
+                () => this.input.value = ''))
         };
 
         removeItem = (item) => {
-            this.props.store.dispatch(removeGoalAction(item.id));
-            API.deleteGoal(item.id)
-                .catch(() => {
-                    this.props.store.dispatch(addGoalAction(item));
-                    alert("There was some problem. Try again.")
-                });
+            this.props.store.dispatch(handleDeleteGoal(item));
         };
 
         toggleItem = (item) => {
